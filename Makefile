@@ -1,23 +1,25 @@
-.PHONY: doc
+REBAR ?= ./rebar3
 
-all:
-	./rebar compile
-	./rebar doc
-	./rebar xref
-	./rebar eunit
+.PHONY: all clean distclean doc shell test
 
-compile:
-	./rebar compile
+all: $(REBAR)
+	$(REBAR) compile
 
-doc:
-	./rebar doc
+clean: $(REBAR)
+	$(REBAR) clean
 
-xref: compile
-	./rebar xref
+doc: $(REBAR)
+	$(REBAR) edoc
 
-clean:
-	./rebar clean
+shell: $(REBAR)
+	$(REBAR) shell
 
-test: xref
-	./rebar eunit
+test: $(REBAR)
+	$(REBAR) dialyzer
+	$(REBAR) eunit
+	$(REBAR) cover
 
+./rebar3:
+	wget "https://github.com/erlang/rebar3/releases/download/3.3.5/rebar3" -O $@-part
+	chmod +x $@-part
+	mv $@-part $@
